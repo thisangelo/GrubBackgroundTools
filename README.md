@@ -27,12 +27,18 @@ chmod +x *.sh
 
 ## Uso
 
-### 1. Convertir la imagen con `grub-processor.sh`
+### 1. Convertir las imagenes a wallpapers compatibles con `grub-processor.sh`
 
-Este script convierte tu imagen al formato y resolución que GRUB necesita.
+Este script convierte tus imagenes al formato y resolución que GRUB necesita.
 
 ```bash
 ./grub-processor.sh <imagen>
+```
+
+O si quieres que se procese toda la carpeta (sin el argumento):
+
+```bash
+./grub-processor.sh 
 ```
 
 > **Importante:** El script está configurado por defecto para una resolución de `1366x768`.  
