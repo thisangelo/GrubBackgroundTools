@@ -1,10 +1,13 @@
 #!/bin/bash
 #
-# GRUB Wallpaper Processor v1.0
+# GRUB Wallpaper Processor v1.1
 # Procesamiento de fondos de pantallas compatibles con el
 # gestor de arranque de Grub version (2.12-1ubuntu7.3).
 #
-# Usado en mi PC, el cual usa el Dualboot. 
+# Usado en mi PC, el cual usa el Dualboot y tambien sirve con
+# GRUB solo.
+#
+# Perfecto para los que quieran un wallpaper en GRUB.
 
 set -uo pipefail
 
@@ -16,7 +19,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color / Sin color
 VERSION="1.1"
 
-# Default configuration / Configuracion por defecto (IMPORTANTE EDITAR)
+# Default configuration / Configuracion por defecto (IMPORTANTE)
 
 # Editar esta carpeta por la que se usara como origen 
 CARPETA_DEFECTO="$HOME/Wallpapers0"
@@ -64,6 +67,7 @@ inicializar_resolucion() {
 inicializar_resolucion
 echo ""
 echo "DISPLAY RESOLUTION DETECTED"
+echo ""
 echo "Resolución: $RESOLUCION"
 echo "Ancho: $ANCHO px"
 echo "Alto:  $ALTO px"
