@@ -1,0 +1,21 @@
+# Archivos temporales generados por los scripts
+*_temp_grub.png
+*.tmp
+*.temp
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+*.log
+
+# Archivos de editor de Vs Code
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de backup
+*~
+*.bak
+
+# No tengo ni idea sobre los .gitignore pero se ve bien, por si acaso
