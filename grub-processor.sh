@@ -14,19 +14,16 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color / Sin color
-VERSION="1.0"
+VERSION="1.1"
 
 # Default configuration / Configuracion por defecto (IMPORTANTE EDITAR)
 
 # Editar esta carpeta por la que se usara como origen 
-CARPETA_DEFECTO="$HOME/Imagenes/wallpaper"
+CARPETA_DEFECTO="$HOME/Wallpapers0"
 ORIGEN="${1:-$CARPETA_DEFECTO}"
 
 # Editar esta carpeta por la que se usara como destino
 DESTINO="${2:-/boot/grub/wallpapers}"
-
-#Editar por la resolucion de su pantalla (IMPORTANTE)
-RESOLUCION="${3:-1366x768}"
 
 # Display header / Mostrar encabezado
 echo -e "${BLUE}================================================${NC}"
@@ -34,15 +31,43 @@ echo -e "${BLUE}      GRUB WALLPAPER PROCESSOR v${VERSION}      ${NC}"
 echo -e "${RED}                  thisangeloo                   ${NC}"
 echo -e "${BLUE}================================================${NC}"
 
-# Validate resolution format / Validar formato de resolucion
-if ! [[ "$RESOLUCION" =~ ^[0-9]+x[0-9]+$ ]]; then
-    echo -e "${RED}ERROR: Invalid resolution format / Formato de resolucion invalido${NC}"
-    exit 1
-fi
+echo "Se requiere permisos para escribir/sobreescribir en ${DESTINO} "
+sudo -v || exit 1
 
-# Extract width and height / Extraer ancho y alto
-ANCHO="${RESOLUCION%x*}"
-ALTO="${RESOLUCION#*x}"
+echo -e "${BLUE} Identificando la resolucion de su pantalla ${NC}"
+sleep 5
+## Buscar la resolucion exacta de la pantalla
+inicializar_resolucion() {
+    # Default resolution
+    RESOLUCION="1366x768"
+
+    # Init all commands detection display resolution
+    local detected=$(xrandr --current 2>/dev/null | grep '*' | head -1 | awk '{print $1}')
+    [[ -z "$detected" ]] && detected=$(xdpyinfo 2>/dev/null | grep dimensions | awk '{print $2}')
+    [[ -z "$detected" ]] && detected=$(wlr-randr 2>/dev/null | grep -A1 "current" | grep -v "current" | head -1 | awk '{print $1}')
+
+    # Si hay detección, actualizar
+    [[ -n "$detected" ]] && RESOLUCION="$detected"
+
+    # Validate resolution format
+    if ! [[ "$RESOLUCION" =~ ^[0-9]+x[0-9]+$ ]]; then
+        echo -e "${RED}ERROR: Invalid resolution format / Formato de resolucion invalido: $RESOLUCION${NC}"
+        exit 1
+    fi
+
+    # Calcular ancho y alto
+    ANCHO=${RESOLUCION%x*}
+    ALTO=${RESOLUCION#*x}
+}
+
+# Ejecutar detección
+inicializar_resolucion
+echo ""
+echo "DISPLAY RESOLUTION DETECTED"
+echo "Resolución: $RESOLUCION"
+echo "Ancho: $ANCHO px"
+echo "Alto:  $ALTO px"
+echo ""
 
 # Check dependencies / Verificar dependencias
 for dep in convert identify; do
@@ -52,6 +77,11 @@ for dep in convert identify; do
         exit 1
     fi
 done
+
+## Crear el directorio de origen si fuera necesario
+if [ ! -d "$ORIGEN" ]; then
+    mkdir -p "$ORIGEN"
+fi
 
 # Validate source directory / Validar directorio origen
 if [ ! -d "$ORIGEN" ]; then
@@ -64,6 +94,14 @@ ORIGEN="$(cd "$ORIGEN" && pwd)"
 if [ ! -d "$DESTINO" ]; then
     sudo mkdir -p "$DESTINO"
 fi
+
+# Validate source directory / Validar directorio origen
+if [ ! -d "$DESTINO" ]; then
+    echo -e "${RED}ERROR: Destination directory does not exist / Directorio destino no existe${NC}"
+    exit 1
+fi
+DESTINO="$(cd "$DESTINO" && pwd)"
+
 
 # Check if sudo is needed for destination / Verificar si se necesita sudo para destino
 USAR_SUDO=0
@@ -80,6 +118,9 @@ echo -e "${BLUE}Resolution / Resolucion:${NC} $RESOLUCION\n"
 # Change to source directory / Cambiar al directorio origen
 cd "$ORIGEN" || exit 1
 shopt -s nullglob
+
+## Pausa
+read -p "Presiona Enter para continuar..."
 
 # Initialize counters / Inicializar contadores
 PROCESADAS=0
@@ -127,7 +168,7 @@ instalar_en_destino() {
 for img in *; do
     # Skip if not a regular file / Saltar si no es un archivo regular
     [ -f "$img" ] || continue
-    
+
     # Get image info / Obtener informacion de la imagen
     INFO=$(obtener_info_imagen "$img") || continue
     [ -z "$INFO" ] && continue
