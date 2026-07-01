@@ -42,11 +42,11 @@ O si quieres que se procese toda la carpeta (sin el argumento):
 ```
 
 > **Importante:** El script está configurado por defecto para una resolución de `1366x768`.  
-> Si tu pantalla tiene una resolución diferente, debes editarlo antes de usarlo.
+> Si tu pantalla tiene una resolución diferente, debes esperar que el script lo detecte antes de usarlo y confirmar si es correcto, o editarlo manualmente.
 
-**¿Cómo saber tu resolución de GRUB?**
+**¿Cómo saber tu resolución?**
 
-Ejecuta esto en la terminal:
+Si desea editarlo manualmente, debe ejecutar esto en la terminal:
 
 ```bash
 sudo cat /etc/default/grub
@@ -55,7 +55,7 @@ sudo cat /etc/default/grub
 Busca la línea que dice `GRUB_GFXMODE`, debería verse algo así:
 
 ```
-GRUB_GFXMODE="1366x768,auto"
+GRUB_GFXMODE="1366x768,auto" # EJEMPLO
 ```
 
 Ese valor es tu resolución. Luego abre `grub-processor.sh`, ve a la línea 29 y cámbiala:
@@ -65,17 +65,21 @@ Ese valor es tu resolución. Luego abre `grub-processor.sh`, ve a la línea 29 y
 RESOLUCION="${3:-1366x768}"   # Reemplaza 1366x768 por la tuya
 ```
 
+El script ya lo hace por usted, asi que no hay problemas.
+
 ### 2. Seleccionar el wallpaper con `grub-selector.sh`
 
-Una vez procesada la imagen, ejecuta este script para aplicarla:
+Una vez procesada la imagen o carpeta, ejecuta este script para aplicarla:
 
 ```bash
 ./grub-selector.sh
 ```
+Se pediran privilegios de root para poder editar la linea de grub, puede verificar el script si desea saber que hace en realidad.
 
 Sigue las instrucciones en pantalla para elegir y aplicar el fondo.
 
 ## Notas
 
 - Los cambios en GRUB requieren permisos de superusuario, es posible que los scripts te pidan tu contraseña.
-- Si algo sale mal, puedes restaurar GRUB con `sudo update-grub`.
+
+- Si algo sale mal, puedes restaurar GRUB con `sudo update-grub` o resinstalar grub a su estado original.
