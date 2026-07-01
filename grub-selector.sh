@@ -31,7 +31,13 @@ if [ ! -d "$WALLPAPER_DIR" ]; then
 fi
 
 # Get list of PNG images / Obtener lista de imagenes PNG
-mapfile -t images < <(ls "$WALLPAPER_DIR"/*.png 2>/dev/null | xargs -n1 basename)
+# mapfile -t images < <(ls "$WALLPAPER_DIR"/*.png 2>/dev/null | xargs -n1 basename)
+
+# This version reads better name of  wallpapers that have one or more spaces empty or special characters inside name
+images=()
+while IFS= read -r -d '' file; do
+    images+=("$(basename "$file")")
+done < <(find "$WALLPAPER_DIR" -maxdepth 1 -type f -iname "*.png" -print0 2>/dev/null)
 
 # Check if there are images / Verificar si hay imagenes
 if [ ${#images[@]} -eq 0 ]; then
