@@ -32,16 +32,17 @@ chmod +x *.sh
 Este script convierte tus imagenes al formato y resolución que GRUB necesita.
 
 ```bash
-./grub-processor.sh <imagen>
+./grub-processor.sh <ruta de la carpeta>
 ```
 
-O si quieres que se procese toda la carpeta (sin el argumento):
+O si quieres que se procese todo desde su carpeta por defecto (~/Wallpapers0):
 
 ```bash
 ./grub-processor.sh 
 ```
 
-> **Importante:** El script está configurado por defecto para una resolución de `1366x768`.  
+> **Importante:** El script está configurado por defecto para una resolución de `1366x768`.
+ 
 > Si tu pantalla tiene una resolución diferente, debes esperar que el script lo detecte antes de usarlo y confirmar si es correcto, o editarlo manualmente.
 
 **¿Cómo saber tu resolución?**
